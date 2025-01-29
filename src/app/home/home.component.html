@@ -1,0 +1,50 @@
+<div class="filters flex flex-wrap items-center justify-between gap-4 p-4 bg-white rounded-lg shadow-md border border-gray-200">
+
+  <input
+    [(ngModel)]="searchQuery"
+    (input)="applyFilters()"
+    placeholder="🔍 Search for a country..."
+    class="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition-all duration-300"
+  />
+
+  <button
+    (click)="clearFilters()"
+    class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-md transition-all duration-300"
+  >
+    ✖ Clear
+  </button>
+</div>
+
+<div *ngIf="isLoading" class="p-6 text-center">
+  <div class="animate-spin rounded-full h-14 w-14 border-t-4 border-b-4 border-blue-500 mx-auto"></div>
+  <p class="text-gray-500 mt-2">Loading countries...</p>
+</div>
+
+<div class="grid gap-6 p-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+  <div
+    *ngFor="let country of filteredCountries"
+    class="country-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:scale-105 border border-gray-200"
+    [routerLink]="['/country', country.name.common]"
+  >
+    <div class="relative">
+      <img
+        [src]="country.flags.png"
+        [alt]="country.name.common + ' Flag'"
+        class="w-full h-40 object-cover rounded-t-lg"
+      />
+      <span class="absolute top-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
+        🌍 {{ country.region || 'Unknown' }}
+      </span>
+    </div>
+
+    <div class="p-4 text-center">
+      <h3 class="text-lg font-semibold text-gray-800">{{ country.name.common }}</h3>
+      <p class="text-sm text-gray-600">🏙️ Capital: {{ country.capital?.[0] || 'N/A' }}</p>
+      <p class="text-sm text-gray-600">👥 Population: {{ country.population | number }}</p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="filteredCountries.length === 0 && !isLoading" class="p-6 text-center text-gray-600">
+  <p class="text-lg font-semibold">😢 No countries match your search.</p>
+</div>
